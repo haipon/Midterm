@@ -164,16 +164,54 @@ nav a {
     height: auto;  
 }
 
+.image-card img[alt="Cabinets"] {
+    width: 320px;  
+    height: auto;  
+}
+
 .image-card img[alt="Dining Tables"] {
-    width: 250px;  
+    width: 230px;  
     height: auto;  
 }
 
 .image-card img[alt="Accessories"] {
-    width: 200px;  
+    width: 190px;  
     height: auto;  
 }
 
+.image-card img[alt="Beds"] {
+    width: 260px;  
+    height: auto;  
+}
+.image-card img[alt="Nightstands"] {
+    width: 220px;  
+    height: auto;  
+}
+
+.image-card img[alt="Dressers"] {
+    width: 330px;  
+    height: auto;  
+}
+
+.image-card img[alt="Coffee Table"] {
+    width: 245px;  
+    height: auto;  
+}
+
+.image-card img[alt="Lighting"] {
+    width: 220px;  
+    height: auto;  
+}
+
+.image-card img[alt="Chairs"] {
+    width: 250px;  
+    height: auto;  
+}
+
+.image-card img[alt="Storage"] {
+    width: 260px;  
+    height: auto;  
+}
 .image-card h2, .image-card p {
     margin: 10px 0;
     padding: 10px;
