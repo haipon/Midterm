@@ -9,20 +9,20 @@
         <header>
             <h1 class="header">SAVICLE</h1>
             <nav>
-                <a href="index.html">Home</a>
+                <a href="index.php">Home</a>
                 <div class="dropdown">
                     <h2 class="dropbtn">Furniture</h2>
                     <div class="dropdown-content">
-                        <a href="office.html">Office</a>
-                        <a href="livingroom.html">Living Room</a>
-                        <a href="diningroom.html">Dining Room</a>
-                        <a href="bedroom.html">Bedroom</a>
-                        <a href="bathroom.html">Bathroom</a>
+                        <a href="office.php">Office</a>
+                        <a href="livingroom.php">Living Room</a>
+                        <a href="diningroom.php">Dining Room</a>
+                        <a href="bedroom.php">Bedroom</a>
+                        <a href="bathroom.php">Bathroom</a>
                     </div>
                 </div>
-                <a href="wishlist.html">Wishlist</a>
-                <a href="cart.html">Cart</a>
-                <a href="login.html" class="login">Login</a>
+                <a href="wishlist.php">Wishlist</a>
+                <a href="cart.php">Cart</a>
+                <a href="/midterm/login-regis/login.php" class="login">Login</a>
             </nav>
         </header>
 
@@ -33,35 +33,30 @@
                 <div class="image-card" data-target="#section1">
                     <img src="photos/bathtub.png" alt="Bathtubs">
                     <h2>Bathtubs</h2>
-                    <p>Upgrade your bathroom with our unique bathtubs, 
-                        from classic freestanding styles to modern built-ins.
-                        Create your perfect oasis while choosing sustainability.
-
-
+                    <p>Revamp your workspace with our stylish, 
+                        pre-loved office desks. Each desk offers a 
+                        unique character and sturdy design, perfect for 
+                        enhancing productivity while supporting sustainable choices.
                     </p>
                 </div> <!-- Closing tag for the first image-card -->
             
                 <div class="image-card" data-target="#section2">
                     <img src="photos/sink.png" width="100px" alt="Sinks">
                     <h2>Sinks</h2>
-                    <p>Elevate your space with our curated selection of sinks. 
-                        From vintage styles to contemporary designs, 
-                        discover the perfect sink that combines functionality 
-                        and sustainability for your bathroom.
-
-
+                    <p>Discover the perfect blend of comfort and style with our 
+                        collection of used office chairs. Designed for ergonomic support, 
+                        these chairs will keep you productive without compromising on aesthetics.
                     </p>
                 </div> <!-- Closing tag for the second image-card -->
             
                 <div class="image-card" data-target="#section3">
                     <img src="photos/browntoilet.png" alt="Toilet Seats">
                     <h2>Toilet Seats</h2>
-                    <p>Upgrade your bathroom with our 
-                        stylish toilet seats that blend 
-                        comfort and design. Choose from a
-                         variety of unique styles to add a touch of flair to your space!
-
-
+                    <p>Maximize your office 
+                        organization with our selection of 
+                        used storage solutions. From charming filing cabinets 
+                        to versatile shelves, each piece combines functionality with 
+                        sustainability to enhance your workspace.
                     </p>
                 </div> <!-- Closing tag for the third image-card -->
             </div> <!-- Closing tag for the image-container -->
