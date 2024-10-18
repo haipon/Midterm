@@ -10,7 +10,8 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 10px 30px;
-    background-color: white;
+        /* height: 100vh; */
+    background: linear-gradient(180deg, #9cabb4, white 60%);
 }
 
 header h1 {
