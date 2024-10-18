@@ -9,12 +9,15 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 30px;
-    background-color: white;
+    padding: 20px 50px; /* Increased padding for more space */
+    background-color: #adbfa3; /* Updated background color */
+    border-bottom-left-radius: 50px; /* Rounded bottom corners */
+    border-bottom-right-radius: 50px; /* Rounded bottom corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 header h1 {
-    color: #6F3F3A;
+    color: white; /* White text color */
     margin: 0;
     font-size: 2em;
 }
@@ -26,12 +29,11 @@ nav {
 }
 
 nav a {
-    color: #6F3F3A;
+    color: white; /* Updated to white */
     text-decoration: none;
     font-weight: 500;
     font-size: 1.1em;
 }
-
 
 
 /* Dropdown Styling */
