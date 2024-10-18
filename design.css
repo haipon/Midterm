@@ -165,6 +165,14 @@ nav a {
     color: #9e674e;
 }
 
+.image-card p {
+    text-align: justify; 
+    margin-top: 10px; 
+    max-width: 280px; 
+    margin-left: auto; 
+    margin-right: auto;
+}
+
 
 /* Hover effect for cards */
 .image-card:hover {
