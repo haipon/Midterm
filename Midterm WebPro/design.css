@@ -134,6 +134,15 @@ nav a {
     height: auto;  
 }
 
+.image-card img[alt="Dining Tables"] {
+    width: 250px;  
+    height: auto;  
+}
+
+.image-card img[alt="Accessories"] {
+    width: 200px;  
+    height: auto;  
+}
 
 .image-card h2, .image-card p {
     margin: 10px 0;
