@@ -140,8 +140,13 @@ nav a {
     height: auto;  
 }
 
+.image-card img[alt="Cabinets"] {
+    width: 320px;  
+    height: auto;  
+}
+
 .image-card img[alt="Dining Tables"] {
-    width: 250px;  
+    width: 230px;  
     height: auto;  
 }
 
