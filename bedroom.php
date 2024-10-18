@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Office Page</title>
+        <title>Bedroom Page</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="design.css">
     </head>
@@ -9,20 +9,20 @@
         <header>
             <h1 class="header">SAVICLE</h1>
             <nav>
-                <a href="index.html">Home</a>
+                <a href="index.php">Home</a>
                 <div class="dropdown">
                     <h2 class="dropbtn">Furniture</h2>
                     <div class="dropdown-content">
-                        <a href="office.html">Office</a>
-                        <a href="livingroom.html">Living Room</a>
-                        <a href="diningroom.html">Dining Room</a>
-                        <a href="bedroom.html">Bedroom</a>
-                        <a href="bathroom.html">Bathroom</a>
+                        <a href="office.php">Office</a>
+                        <a href="livingroom.php">Living Room</a>
+                        <a href="diningroom.php">Dining Room</a>
+                        <a href="bedroom.php">Bedroom</a>
+                        <a href="bathroom.php">Bathroom</a>
                     </div>
                 </div>
-                <a href="wishlist.html">Wishlist</a>
-                <a href="cart.html">Cart</a>
-                <a href="login.html" class="login">Login</a>
+                <a href="wishlist.php">Wishlist</a>
+                <a href="cart.php">Cart</a>
+                <a href="/midterm/login-regis/login.php" class="login">Login</a>
             </nav>
         </header>
 
