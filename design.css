@@ -109,6 +109,7 @@ nav a {
     border-radius: 10px; /* Increase this for more rounded corners */
 }
 
+
 .image-container {
     display: flex;           
     justify-content: space-between; 
@@ -117,6 +118,7 @@ nav a {
     max-width: 1200px;       
     padding: 10px;
 }
+
 
 /* Individual cards */
 .image-card {
