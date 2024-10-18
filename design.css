@@ -5,19 +5,27 @@
 
 /*HOME PAGE STYLINGS*/
 /* General Header Styling */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
 header {
+    position: relative;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px; /* Increased padding for more space */
-    background-color: #adbfa3; /* Updated background color */
-    border-bottom-left-radius: 50px; /* Rounded bottom corners */
-    border-bottom-right-radius: 50px; /* Rounded bottom corners */
+    align-items: flex-start;
+    padding: 10px 30px; /* Increased padding for a larger look */
+    background-color: #d2dce6; /* Updated background color */
+    height: 70vh; /* Make the header take up half of the viewport height */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 header h1 {
-    color: white; /* White text color */
+    color: #6F3F3A; /* White text color */
     margin: 0;
     font-size: 2em;
 }
@@ -29,10 +37,24 @@ nav {
 }
 
 nav a {
-    color: white; /* Updated to white */
+    color: #6F3F3A; /* Updated to white */
     text-decoration: none;
     font-weight: 500;
     font-size: 1.1em;
+}
+
+.hometown {
+    position: absolute; /* Positioning to the bottom of the header */
+    bottom: 180px; /* Distance from the bottom */
+    left: 100px; /* Adjust horizontal position if needed */
+    width: 40%; /* Ensure it takes a consistent width */
+    font-size: 1.5em;
+    color: #72383d;
+}
+
+.hometown p{
+    font-size: 0.8em;
+    color: #ab644b;
 }
 
 
@@ -55,7 +77,7 @@ nav a {
 /* Dropdown Content */
 .dropdown-content {
     position: absolute;
-    background-color: rgb(233, 212, 194);
+    background-color: #f2f2eb;
     min-width: 160px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
     z-index: 1;
@@ -90,7 +112,7 @@ nav a {
 
 
 .login{
-    background-color: #d7e1f3;
+    background-color: #f2f2eb;
     padding: 7px;
     padding-left: 15px;
     padding-right: 15px;
