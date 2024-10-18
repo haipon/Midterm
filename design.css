@@ -166,6 +166,11 @@ nav a {
     height: auto;  
 }
 
+.image-card img[alt="Dressers"] {
+    width: 330px;  
+    height: auto;  
+}
+
 .image-card h2, .image-card p {
     margin: 10px 0;
     padding: 10px;
