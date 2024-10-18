@@ -13,7 +13,6 @@ if (isset($_SESSION["user"])) {
     <title>Login Form</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/midterm/design.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -63,16 +62,18 @@ if (isset($_SESSION["user"])) {
         ?>
       <form action="login.php" method="post">
         <div class="form-group">
-            <input type="email" placeholder="Enter Email:" name="email" class="form-control">
+            <input type="email" placeholder="Enter Email" name="email" class="form-control">
         </div>
         <div class="form-group">
-            <input type="password" placeholder="Enter Password:" name="password" class="form-control">
+            <input type="password" placeholder="Enter Password" name="password" class="form-control">
         </div>
         <div class="form-btn">
-            <input type="submit" value="Login" name="login" class="btn btn-primary">
+            <input type="submit" value="Login" name="login" class="custom-btn">
         </div>
       </form>
-     <div><p>Not registered yet <a href="/midterm/login-regis/registration.php">Register Here</a></p></div>
+     <div class="click">
+        <a href="/midterm/login-regis/registration.php">Register Here</a>
+    </div>
     </div>
 </body>
 </html>
