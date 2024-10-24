@@ -58,7 +58,7 @@ ini_set('display_errors', 1);
             }
 
             // Prepare SQL statement
-            $sql = "SELECT * FROM user WHERE email = ?";
+            $sql = "SELECT * FROM users WHERE email = ?";  // Use the correct table name
             $stmt = mysqli_prepare($conn, $sql);
 
             // Check if statement preparation was successful
@@ -73,34 +73,34 @@ ini_set('display_errors', 1);
             $user = mysqli_fetch_assoc($result);
 
             // Check if the user exists
-            if ($user) {    
+            if ($user) {
                 if (password_verify($password, $user["password"])) {
                     // Log in the user and redirect to homepage
                     $_SESSION["user"] = $user['email'];
-                    $_SESSION["admin_id"] = $user['id']; // Set admin ID in the session
+                    $_SESSION["admin_id"] = $user['id']; // Assuming you want to store user ID
                     header("Location: /midterm/index.php");
                     exit();
                 } else {
-                    echo "<div class='alert alert-danger'>Incorrect password</div>";
+                    echo "<div class='alert alert-danger'>Incorrect password.</div>";
                 }
             } else {
-                echo "<div class='alert alert-danger'>Email not found</div>";
+                echo "<div class='alert alert-danger'>No user found with that email.</div>";
             }
         }
         ?>
         <form action="login.php" method="post">
             <div class="form-group">
-                <input type="email" placeholder="Enter Email" name="email" class="form-control" required>
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
             </div>
             <div class="form-group">
-                <input type="password" placeholder="Enter Password" name="password" class="form-control" required>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
             <div class="form-btn">
-                <input type="submit" value="Login" name="login" class="custom-btn">
+                <input type="submit" class="custom-btn" value="Login" name="login">
             </div>
         </form>
         <div class="click">
-            <a href="/midterm/login-regis/registration.php">Register Here</a>
+            <a href="registration.php">Register Here</a>
         </div>
     </div>
 </body>

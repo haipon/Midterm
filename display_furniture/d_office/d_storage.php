@@ -25,11 +25,7 @@
                 </div>
                 <a href="/midterm/wishlist.php">Wishlist</a>
                 <a href="/midterm/cart.php">Cart</a>
-                <?php if (isset($_SESSION["user"])): ?>
-                    <a href="/midterm/login-regis/logout.php" class="logout">Logout</a>
-                <?php else: ?>
-                    <a href="/midterm/login-regis/login.php" class="login">Login</a>
-                <?php endif; ?>
+                <a href="/midterm/login-regis/login.php" class="login">Login</a>
             </nav>
         </header>
 

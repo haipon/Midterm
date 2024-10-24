@@ -1,9 +1,13 @@
 <?php
 session_start();
+
+// Check if the user is already logged in
 if (isset($_SESSION["user"])) {
-   header("Location: /midterm/index.php");
-   exit();
+    header("Location: /midterm/index.php");
+    exit();
 }
+
+// Error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ?>
@@ -47,11 +51,11 @@ ini_set('display_errors', 1);
             $email = $_POST["email"];
             $password = $_POST["password"];
             $passwordRepeat = $_POST["repeat_password"];
-
+        
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
+        
             $errors = array();
-
+        
             if (empty($fullName) || empty($email) || empty($password) || empty($passwordRepeat)) {
                 array_push($errors, "All fields are required");
             }
@@ -64,32 +68,35 @@ ini_set('display_errors', 1);
             if ($password !== $passwordRepeat) {
                 array_push($errors, "Passwords do not match");
             }
+        
+            require_once "database.php";  // Ensure database connection file is correct
 
-            require_once "database.php";
-            $sql = "SELECT * FROM user WHERE email = ?";
+            // Use the correct table name in the furniture_store database
+            $sql = "SELECT * FROM users WHERE email = ?";
             $stmt = mysqli_prepare($conn, $sql);
             mysqli_stmt_bind_param($stmt, "s", $email);
             mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
             $rowCount = mysqli_num_rows($result);
-
+        
             if ($rowCount > 0) {
                 array_push($errors, "Email already exists");
             }
-
+        
             if (count($errors) > 0) {
                 foreach ($errors as $error) {
                     echo "<div class='alert alert-danger'>$error</div>";
                 }
             } else {
-                $sql = "INSERT INTO user (full_name, email, password) VALUES (?, ?, ?)";
+                // Insert into the correct table in the furniture_store database
+                $sql = "INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)";
                 $stmt = mysqli_prepare($conn, $sql);
                 if ($stmt) {
                     mysqli_stmt_bind_param($stmt, "sss", $fullName, $email, $passwordHash);
                     mysqli_stmt_execute($stmt);
                     echo "<div class='alert alert-success'>You are registered successfully.</div>";
                 } else {
-                    die("Something went wrong");
+                    die("<div class='alert alert-danger'>Something went wrong</div>");
                 }
             }
         }

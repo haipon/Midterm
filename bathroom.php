@@ -24,8 +24,8 @@ session_start();
                         <a href="bathroom.php">Bathroom</a>
                     </div>
                 </div>
-                <a href="wishlist.php">Wishlist</a>
-                <a href="cart.php">Cart</a>
+                <a href="/midterm/wishlist.php">Wishlist</a>
+                <a href="/midterm/cart.php">Cart</a>
                 <?php if (isset($_SESSION["user"])): ?>
                     <a href="/midterm/login-regis/logout.php" class="logout">Logout</a>
                 <?php else: ?>

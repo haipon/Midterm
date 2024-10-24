@@ -195,14 +195,22 @@ h1 {
 }
 
 .remove-btn {
-    color: #ab644b;
-    text-decoration: none;
-    font-weight: bold;
+    background-color: #ab644b; /* Match the background color of the addCart button */
+    color: #eee; /* Match the text color */
+    padding: 5px 10px; /* Same padding as addCart */
+    border-radius: 20px; /* Match the border-radius */
+    border: none; /* No border */
+    z-index: 10; /* Ensure it is above other elements */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 0.9rem; /* Set font size */
+    position: relative; /* Maintain stacking context */
 }
 
 .remove-btn:hover {
-    text-decoration: underline;
+    background-color: #9c4d4a; /* Darker shade on hover for feedback */
+    color: white; /* Change text color on hover */
 }
+
 
 .back-btn {
     display: block;
@@ -257,4 +265,65 @@ h1 {
 /* Ensure the card-content has relative positioning to anchor the icons */
 .furniture-card .card-content {
     position: relative; /* Set position relative for absolute child elements */
+}
+
+/* Cart Summary Styles */
+.cart-summary {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.cart-summary h3 {
+    font-size: 1.5rem;
+    color: #704343; /* Consistent color with the design */
+    margin-bottom: 10px; /* Space below the subtotal */
+}
+
+.place-order-btn {
+    background-color: #704343; /* Match the primary color */
+    color: white; /* White text for contrast */
+    padding: 10px 20px; /* Add some padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1rem; /* Font size */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.place-order-btn:hover {
+    background-color: #ab644b; /* Lighter shade on hover */
+}
+
+/* Quantity Container */
+.quantity-container {
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: row; /* Align items in a row */
+    align-items: center; /* Center items vertically */
+}
+
+/* Button Styles */
+.quantity-form {
+    margin: 0; /* Remove default margin */
+}
+
+.quantity-btn {
+    background-color: #ab644b; /* Match the design color */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 5px 10px; /* Add padding for a larger clickable area */
+    font-size: 0.8rem; /* Consistent font size */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    margin: 0 5px; /* Add horizontal margin for spacing */
+}
+
+.quantity-btn:hover {
+    background-color: #9c4d4a; /* Darker shade on hover */
+}
+
+.quantity {
+    font-size: 1.5rem; /* Consistent size with the buttons */
+    color: #704343; /* Color consistent with the design */
+    margin: 0 10px; /* Add horizontal margin for spacing */
 }

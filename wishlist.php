@@ -1,3 +1,102 @@
+<?php
+session_start();
+$wishlistConn = new mysqli("localhost", "root", "", "furniture_store");
+
+if ($wishlistConn->connect_error) {
+    die("Connection failed: " . $wishlistConn->connect_error);
+}
+
+// Function to check if a product exists in the products table
+function productExists($wishlistConn, $product_id) {
+    $stmt = $wishlistConn->prepare("SELECT COUNT(*) FROM products WHERE id = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    $stmt->close();
+    
+    return $count > 0; // Return true if the product exists
+}
+
+// Function to add a product to the wishlist
+function addToWishlist($wishlistConn, $user_id, $product_id) {
+    // Check if product is already in the wishlist
+    $stmt = $wishlistConn->prepare("SELECT id FROM wishlist WHERE user_id = ? AND product_id = ?");
+    $stmt->bind_param("ii", $user_id, $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) { // Only add if not already in wishlist
+        $stmt->close(); // Close the previous statement
+        $stmt = $wishlistConn->prepare("INSERT INTO wishlist (user_id, product_id) VALUES (?, ?)");
+        $stmt->bind_param("ii", $user_id, $product_id);
+        
+        if (!$stmt->execute()) {
+            die("Error adding to wishlist: " . $stmt->error); // Debugging: show the error
+        } else {
+            echo "Item added to wishlist."; // Confirm addition
+        }
+    } else {
+        echo "Item already in wishlist."; // Confirm already exists
+    }
+
+    $stmt->close();
+}
+
+// Function to remove a product from the wishlist
+function removeFromWishlist($wishlistConn, $wishlist_id) {
+    $stmt = $wishlistConn->prepare("DELETE FROM wishlist WHERE id = ?");
+    $stmt->bind_param("i", $wishlist_id);
+
+    if (!$stmt->execute()) {
+        die("Error removing from wishlist: " . $stmt->error);
+    }
+
+    $stmt->close();
+}
+
+// Handle the POST request for adding/removing from the wishlist
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['action']) && $_POST['action'] === 'add_to_wishlist' && isset($_POST['product_id'])) {
+        $user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : 1; // Default to 1 if not logged in
+        $product_id = (int)$_POST['product_id'];
+
+        // Check if the product exists before adding to wishlist
+        if (productExists($wishlistConn, $product_id)) {
+            addToWishlist($wishlistConn, $user_id, $product_id);
+        } else {
+            echo "Product does not exist.";
+        }
+
+        // Redirect to the wishlist page after adding
+        header("Location: /midterm/wishlist.php");
+        exit();
+    } elseif (isset($_POST['action']) && $_POST['action'] === 'remove' && isset($_POST['wishlist_id'])) {
+        $wishlist_id = (int)$_POST['wishlist_id'];
+        removeFromWishlist($wishlistConn, $wishlist_id);
+
+        // Redirect to the wishlist page after removing
+        header("Location: /midterm/wishlist.php");
+        exit();
+    }
+}
+
+// Fetch wishlist items for the user
+$user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : 1; // Default to 1 if not logged in
+$sql = "SELECT w.id AS wishlist_id, p.id AS product_id, p.name, p.price, p.image
+        FROM wishlist w
+        JOIN products p ON w.product_id = p.id
+        WHERE w.user_id = ?";
+$stmt = $wishlistConn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$wishlistItems = $result->fetch_all(MYSQLI_ASSOC);
+
+// Close connection
+$wishlistConn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +106,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="design.css"> <!-- Reference your existing design CSS -->
     <style>
+        /* Your existing styles */
         /* Additional styles for wishlist page */
         .wishlist-container {
             padding: 20px;
@@ -22,7 +122,6 @@
             animation: fadeIn 1s ease-in-out;
         }
 
-        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -35,7 +134,7 @@
 
         th, td {
             padding: 15px;
-            text-align: left; /* Default text alignment */
+            text-align: left;
         }
 
         th {
@@ -44,22 +143,16 @@
         }
 
         td img {
-            width: 100px; /* Increase the width */
-            height: auto; /* Maintain aspect ratio */
+            width: 100px;
+            height: auto;
         }
 
         td {
-            text-align: center; /* Center the content of table cells */
+            text-align: center;
         }
 
-        .stock-status {
-            color: green;
-            font-weight: bold;
-        }
-
-        /* Action buttons styling */
         .action-btns {
-            text-align: center; /* Center the buttons */
+            text-align: center;
         }
 
         .add-btn, .remove-btn {
@@ -71,8 +164,8 @@
             border-radius: 5px;
             font-weight: 500;
             transition: background-color 0.3s ease;
-            display: inline-block; /* Change to inline-block for uniformity */
-            margin: 0 5px; /* Add margin for spacing */
+            display: inline-block;
+            margin: 0 5px;
         }
 
         .add-btn:hover {
@@ -94,7 +187,6 @@
             to { opacity: 1; }
         }
 
-        /* Responsive layout */
         @media (max-width: 768px) {
             th, td {
                 font-size: 14px;
@@ -120,6 +212,7 @@
             </div>
             <a href="wishlist.php" class="active">Wishlist</a>
             <a href="cart.php">Cart</a>
+            
             <?php if (isset($_SESSION["user"])): ?>
                 <a href="/midterm/login-regis/logout.php" class="logout">Logout</a>
             <?php else: ?>
@@ -136,44 +229,35 @@
                     <th>Item Image</th>
                     <th>Item Name</th>
                     <th>Unit Price</th>
-                    <th>Stock Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Wishlist Item 1 -->
-                <tr>
-                    <td><img src="photos/sofa.png" alt="Wishlist Sofa"></td>
-                    <td>Cozy Sofa</td>
-                    <td>$99.00</td>
-                    <td class="stock-status">In Stock</td>
-                    <td class="action-btns">
-                        <button class="add-btn">Add to Cart</button>
-                        <button class="remove-btn">Remove</button>
-                    </td>
-                </tr>
-                <!-- Wishlist Item 2 -->
-                <tr>
-                    <td><img src="photos/coffeetablevintage.png" alt="Wishlist Coffee Table"></td>
-                    <td>Sculptural Coffee Table</td>
-                    <td>$220.00</td>
-                    <td class="stock-status">In Stock</td>
-                    <td class="action-btns">
-                        <button class="add-btn">Add to Cart</button>
-                        <button class="remove-btn">Remove</button>
-                    </td>
-                </tr>
-                <!-- Wishlist Item 3 -->
-                <tr>
-                    <td><img src="photos/lamp.png" alt="Wishlist Lamp"></td>
-                    <td>Elegant Lamp</td>
-                    <td>$19.00</td>
-                    <td class="stock-status">In Stock</td>
-                    <td class="action-btns">
-                        <button class="add-btn">Add to Cart</button>
-                        <button class="remove-btn">Remove</button>
-                    </td>
-                </tr>
+                <?php if (count($wishlistItems) > 0): ?>
+                    <?php foreach ($wishlistItems as $item): ?>
+                        <tr>
+                            <td><img src="/midterm/admin/uploads/<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>"></td>
+                            <td><?= htmlspecialchars($item['name']) ?></td>
+                            <td>RP<?= number_format($item['price'], 2) ?></td>
+                            <td class="action-btns">
+                                <form method="post" action="/midterm/cart.php" style="display:inline;">
+                                    <input type="hidden" name="product_id" value="<?= $row['id'] ?>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="add-btn">Add to Cart</button>
+                                </form>
+                                <form method="post" action="/midterm/wishlist.php" style="display:inline;">
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="wishlist_id" value="<?= $item['wishlist_id'] ?>">
+                                    <button type="submit" class="remove-btn">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="4">No items in your wishlist.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,12 +29,13 @@
                 </div>
                 <a href="/midterm/wishlist.php">Wishlist</a>
                 <a href="/midterm/cart.php">Cart</a>
+                <!-- PHP Session-based Login/Logout Button -->
                 <?php if (isset($_SESSION["user"])): ?>
                     <a href="/midterm/login-regis/logout.php" class="logout">Logout</a>
                 <?php else: ?>
                     <a href="/midterm/login-regis/login.php" class="login">Login</a>
                 <?php endif; ?>
-            </nav>
+                </nav>
         </header>
 
         <h2 class="Title2">SINKS</h2>

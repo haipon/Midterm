@@ -25,12 +25,13 @@
                 </div>
                 <a href="/midterm/wishlist.php">Wishlist</a>
                 <a href="/midterm/cart.php">Cart</a>
-                <?php if (isset($_SESSION["user"])): ?>
+                <!-- PHP Session-based Login/Logout Button -->
+            <?php if (isset($_SESSION["user"])): ?>
                     <a href="/midterm/login-regis/logout.php" class="logout">Logout</a>
                 <?php else: ?>
                     <a href="/midterm/login-regis/login.php" class="login">Login</a>
                 <?php endif; ?>
-            </nav>
+                </nav>
         </header>
 
         <h2 class="Title2">DRESSER</h2>
@@ -39,89 +40,41 @@
             <button class="search-btn">🔍</button>
         </div>
 
-        <div class="furniture-grid">
-            <div class="furniture-card">
-                <img src="photos/bathtub.png" alt="Bathtub">
-                <div class="card-content">
-                    <h2>Name</h2>
-                    <p>Description</p>
-                    <div class="price">
-                        <span class="currency">Rp</span>
-                        <span class="amount">3.499.000</span>
+        <?php
+        session_start();
+        $conn = new mysqli("localhost", "root", "", "furniture_store");
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "SELECT * FROM products WHERE item_type = 'dresser'";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0): ?>
+            <div class="furniture-grid">
+                <?php while ($row = $result->fetch_assoc()): ?>
+                <div class="furniture-card">
+                    <img src="/midterm/admin/uploads/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
+                    <div class="card-content">
+                        <h2><?= htmlspecialchars($row['name']) ?></h2>
+                        <p><?= htmlspecialchars($row['description']) ?></p>
+                        <div class="price">
+                            <span class="currency">Rp</span>
+                            <span class="amount"><?= number_format($row['price'], 0, ',', '.') ?></span>
+                        </div>
+                        <button class="addCart">Add to Cart</button>
+                        <button class="wishlist"><i class="fa-regular fa-heart"></i></button>
+                        <button class="comment"><i class="fa-regular fa-comment"></i></button>
                     </div>
-                    <button class="addCart">
-                        Add to Cart
-                    </button>
-                    <button class="wishlist">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <button class="comment">
-                        <i class="fa-regular fa-comment"></i>
-                    </button>
                 </div>
+                <?php endwhile; ?>
             </div>
-            <div class="furniture-card">
-                <img src="vanity.jpg" alt="Vanity">
-                <div class="card-content">
-                    <h2>Name</h2>
-                    <p>Description</p>
-                    <div class="price">
-                        <span class="currency">Rp</span>
-                        <span class="amount">5.499.000</span>
-                    </div>
-                    <button class="addCart">
-                        Add to Cart
-                    </button>
-                    <button class="wishlist">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <button class="comment">
-                        <i class="fa-regular fa-comment"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="furniture-card">
-                <img src="sofa2.jpg" alt="Sofa">
-                <div class="card-content">
-                    <h2>Name</h2>
-                    <p>Description</p>
-                    <div class="price">
-                        <span class="currency">Rp</span>
-                        <span class="amount">9.999.000</span>
-                    </div>
-                    <button class="addCart">
-                        Add to Cart
-                    </button>
-                    <button class="wishlist">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <button class="comment">
-                        <i class="fa-regular fa-comment"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="furniture-card">
-                <img src="sofa3.jpg" alt="Sofa">
-                <div class="card-content">
-                    <h2>Name</h2>
-                    <p>Description</p>
-                    <div class="price">
-                        <span class="currency">Rp</span>
-                        <span class="amount">3.999.000</span>
-                    </div>
-                    <button class="addCart">
-                        Add to Cart
-                    </button>
-                    <button class="wishlist">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    <button class="comment">
-                        <i class="fa-regular fa-comment"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <main>
-        </main>
+        <?php else: ?>
+            <p>No bathtubs found.</p>
+        <?php endif;
+
+        $conn->close();
+        ?>
     </body>
 </html>

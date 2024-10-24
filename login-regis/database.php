@@ -2,7 +2,7 @@
 $hostName = "localhost";
 $dbUser = "root";
 $dbPassword = "";
-$dbName = "login_register";
+$dbName = "furniture_store";
 
 $conn = mysqli_connect($hostName, $dbUser, $dbPassword, $dbName);
 
