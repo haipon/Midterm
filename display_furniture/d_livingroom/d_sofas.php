@@ -7,7 +7,7 @@ if ($conn->connect_error) {
 }
 
 // Fetch all bathtubs from the database
-$sql = "SELECT * FROM products WHERE item_type = 'sofa'";
+$sql = "SELECT * FROM products WHERE item_type = 'sofas'";
 $result = $conn->query($sql);
 ?>
 
