@@ -8,8 +8,7 @@ if ($cartConn->connect_error) {
 
 // Function to add product to the cart
 function addToCart($cartConn, $user_id, $product_id, $quantity, $session_token) {
-    // Check if the product is already in the cart for this user or session token
-    $stmt = $cartConn->prepare("SELECT id, quantity FROM cart WHERE product_id = ? AND ((user_id IS NOT NULL AND user_id = ?) OR (user_id IS NULL AND session_token = ?))");
+    $stmt = $cartConn->prepare("SELECT id, quantity FROM cart WHERE product_id = ? AND (user_id = ? OR session_token = ?)");
     $stmt->bind_param("iis", $product_id, $user_id, $session_token);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -18,89 +17,51 @@ function addToCart($cartConn, $user_id, $product_id, $quantity, $session_token) 
         $row = $result->fetch_assoc();
         $new_quantity = $row['quantity'] + $quantity;
 
-        // Update quantity in cart
         $updateStmt = $cartConn->prepare("UPDATE cart SET quantity = ? WHERE id = ?");
-        if (!$updateStmt) {
-            die("Prepare failed: " . $cartConn->error);
-        }
         $updateStmt->bind_param("ii", $new_quantity, $row['id']);
-        
-        if (!$updateStmt->execute()) {
-            die("Execute failed: " . $updateStmt->error);
-        }
+        $updateStmt->execute();
         $updateStmt->close();
     } else {
-        // Prepare the insert statement
         if ($user_id > 0) {
             $insertStmt = $cartConn->prepare("INSERT INTO cart (user_id, product_id, quantity, session_token) VALUES (?, ?, ?, ?)");
-            if (!$insertStmt) {
-                die("Prepare failed: " . $cartConn->error);
-            }
             $insertStmt->bind_param("iiis", $user_id, $product_id, $quantity, $session_token);
         } else {
-            // For guest users, only use session_token
             $insertStmt = $cartConn->prepare("INSERT INTO cart (product_id, quantity, session_token) VALUES (?, ?, ?)");
-            if (!$insertStmt) {
-                die("Prepare failed: " . $cartConn->error);
-            }
             $insertStmt->bind_param("iis", $product_id, $quantity, $session_token);
         }
-
-        // Execute the insert statement and handle errors
-        if (!$insertStmt->execute()) {
-            die("Execute failed: " . $insertStmt->error);
-        }
+        $insertStmt->execute();
         $insertStmt->close();
-    }    
-
+    }
     $stmt->close();
 }
 
-// Add to cart functionality
 if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['product_id']) && is_numeric($_POST['quantity'])) {
     $product_id = (int)$_POST['product_id'];
     $quantity = (int)$_POST['quantity'];
-    $user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : 0; // Default to 0 if not logged in
+    $user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : 0;
     $session_token = session_id();
-
-    if ($user_id > 0) {
-        // Optional: Check if the user ID is valid
-        $userCheckStmt = $cartConn->prepare("SELECT id FROM users WHERE id = ?");
-        $userCheckStmt->bind_param("i", $user_id);
-        $userCheckStmt->execute();
-        $userCheckResult = $userCheckStmt->get_result();
-
-        if ($userCheckResult->num_rows === 0) {
-            die("User ID does not exist.");
-        }
-        $userCheckStmt->close();
-    }
 
     addToCart($cartConn, $user_id, $product_id, $quantity, $session_token);
     header("Location: /cart.php");
     exit();
 }
 
-// Handle quantity update from the cart
 if (isset($_POST['cart_id'], $_POST['action'])) {
     $cart_id = intval($_POST['cart_id']);
     $action = $_POST['action'];
 
     if ($action === 'increase') {
-        // Increase quantity
         $updateStmt = $cartConn->prepare("UPDATE cart SET quantity = quantity + 1 WHERE id = ?");
         $updateStmt->bind_param("i", $cart_id);
         $updateStmt->execute();
         $updateStmt->close();
     } elseif ($action === 'decrease') {
-        // Decrease quantity
         $updateStmt = $cartConn->prepare("UPDATE cart SET quantity = quantity - 1 WHERE id = ?");
         $updateStmt->bind_param("i", $cart_id);
         $updateStmt->execute();
         $updateStmt->close();
     }
 
-    // Check if quantity is now 0, and if so, delete the item
     $checkStmt = $cartConn->prepare("SELECT quantity FROM cart WHERE id = ?");
     $checkStmt->bind_param("i", $cart_id);
     $checkStmt->execute();
@@ -108,33 +69,41 @@ if (isset($_POST['cart_id'], $_POST['action'])) {
     $item = $result->fetch_assoc();
 
     if ($item['quantity'] <= 0) {
-        // If quantity is 0, delete the item
         $deleteStmt = $cartConn->prepare("DELETE FROM cart WHERE id = ?");
         $deleteStmt->bind_param("i", $cart_id);
         $deleteStmt->execute();
         $deleteStmt->close();
     }
     $checkStmt->close();
-    
-    // Redirect back to cart page to show updated cart
+
     header("Location: /cart.php");
     exit();
 }
 
-// Fetch all items from the cart
+// Handle item removal
+if (isset($_POST['remove_cart_id'])) {
+    $remove_cart_id = intval($_POST['remove_cart_id']);
+    $deleteStmt = $cartConn->prepare("DELETE FROM cart WHERE id = ?");
+    $deleteStmt->bind_param("i", $remove_cart_id);
+    $deleteStmt->execute();
+    $deleteStmt->close();
+
+    header("Location: /cart.php");
+    exit();
+}
+
 $user_id = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : 0;
 $session_token = session_id();
 $sql = "SELECT c.id AS cart_id, p.name, p.price, p.image, c.quantity
         FROM cart c
         JOIN products p ON c.product_id = p.id
-        WHERE (c.user_id IS NOT NULL AND c.user_id = ?) OR (c.user_id IS NULL AND c.session_token = ?)";
+        WHERE c.user_id = ? OR c.session_token = ?";
 $stmt = $cartConn->prepare($sql);
 $stmt->bind_param("is", $user_id, $session_token);
 $stmt->execute();
 $result = $stmt->get_result();
 $cartItems = $result->fetch_all(MYSQLI_ASSOC);
 
-// Calculate subtotal
 $subtotal = 0;
 foreach ($cartItems as $item) {
     $subtotal += $item['price'] * $item['quantity'];
@@ -150,6 +119,40 @@ $cartConn->close();
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="/design.css">
         <link rel="stylesheet" href="/display_furniture/display_design.css">
+        <style>
+            .quantity-container {
+                display: flex;
+                align-items: center;
+            }
+            .quantity-btn {
+                width: 30px;
+                height: 30px;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #ddd;
+                cursor: pointer;
+                font-size: 16px;
+                background-color: #f0f0f0;
+            }
+            .quantity {
+                margin: 0 10px;
+                font-size: 16px;
+            }
+            .remove-btn {
+                background-color: #f00;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+            }
+            
+            .cart-subtotal {
+                margin-top: 45px;
+                text-align: center;
+            }
+            
+        </style>
     </head>
     <body>
         <header>
@@ -168,13 +171,12 @@ $cartConn->close();
                 </div>
                 <a href="/wishlist.php">Wishlist</a>
                 <a href="/cart.php">Cart</a>
-                <!-- PHP Session-based Login/Logout Button -->
                 <?php if (isset($_SESSION["user"])): ?>
                     <a href="/login-regis/logout.php" class="logout">Logout</a>
                 <?php else: ?>
                     <a href="/login-regis/login.php" class="login">Login</a>
                 <?php endif; ?>
-                </nav>
+            </nav>
         </header>
     <h2 class="Title2">CART</h2>
     <table class="cart-table">
@@ -201,7 +203,7 @@ $cartConn->close();
                                 <form method="post" action="/cart.php" class="quantity-form">
                                     <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
                                     <input type="hidden" name="action" value="decrease">
-                                    <button type="submit" class="quantity-btn minus-btn">-</button>
+                                    <button type="submit" class="quantity-btn">-</button>
                                 </form>
                                 
                                 <span class="quantity"><?= $item['quantity'] ?></span>
@@ -209,15 +211,14 @@ $cartConn->close();
                                 <form method="post" action="/cart.php" class="quantity-form">
                                     <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
                                     <input type="hidden" name="action" value="increase">
-                                    <button type="submit" class="quantity-btn plus-btn">+</button>
+                                    <button type="submit" class="quantity-btn">+</button>
                                 </form>
                             </div>
                         </td>
                         <td>
                             <form method="post" action="/cart.php">
-                                <input type="hidden" name="cart_id" value="<?= $item['cart_id'] ?>">
-                                <input type="hidden" name="action" value="decrease">
-                                <button type="submit" name="remove" class="remove-btn">Remove</button>
+                                <input type="hidden" name="remove_cart_id" value="<?= $item['cart_id'] ?>">
+                                <button type="submit" class="remove-btn">Remove</button>
                             </form>
                         </td>
                     </tr>
@@ -229,13 +230,8 @@ $cartConn->close();
             <?php endif; ?>
         </tbody>
     </table>
-    
-    <?php if (count($cartItems) > 0): ?>
-    <div class="cart-summary">
+    <div class="cart-subtotal">
         <h3>Subtotal: Rp <?= number_format($subtotal, 0, ',', '.') ?></h3>
-        <button onclick="location.href='/checkout.php'" class="place-order-btn">Place Order</button>
     </div>
-<?php endif; ?>
-
 </body>
 </html>
