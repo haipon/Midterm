@@ -69,10 +69,9 @@ ini_set('display_errors', 1);
                 array_push($errors, "Passwords do not match");
             }
         
-            require_once "database.php";  // Ensure database connection file is correct
+            require_once "database.php";  
 
-            // Use the correct table name in the furniture_store database
-            $sql = "SELECT * FROM users WHERE email = ?";
+            $sql = "SELECT * FROM user WHERE email = ?";
             $stmt = mysqli_prepare($conn, $sql);
             mysqli_stmt_bind_param($stmt, "s", $email);
             mysqli_stmt_execute($stmt);
@@ -88,8 +87,7 @@ ini_set('display_errors', 1);
                     echo "<div class='alert alert-danger'>$error</div>";
                 }
             } else {
-                // Insert into the correct table in the furniture_store database
-                $sql = "INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)";
+                $sql = "INSERT INTO user (full_name, email, password) VALUES (?, ?, ?)";
                 $stmt = mysqli_prepare($conn, $sql);
                 if ($stmt) {
                     mysqli_stmt_bind_param($stmt, "sss", $fullName, $email, $passwordHash);
